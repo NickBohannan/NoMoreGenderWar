@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Gender-War Filter
 // @namespace    http://tampermonkey.net
-// @version      2.1
+// @version      2.2
 // @description  Hides YouTube video cards matching configurable gender-war terms
 // @author       Nick Bohannan
 // @match        https://www.youtube.com/*
@@ -156,7 +156,8 @@
         'ytd-grid-video-renderer',
         'ytd-rich-grid-media',
         'ytd-rich-grid-slim-media',
-        'ytd-reel-item-renderer'
+        'ytd-reel-item-renderer',
+        'yt-lockup-view-model'
     ].join(', ');
 
     function escapeRegExp(value) {
@@ -176,7 +177,13 @@
                 return;
             }
 
-            const title = video.querySelector('#video-title, #video-title-link, yt-formatted-string#video-title');
+            const title = video.querySelector([
+                '#video-title',
+                '#video-title-link',
+                'yt-formatted-string#video-title',
+                'a[title][href*="/watch"]',
+                'a[aria-label][href*="/watch"]'
+            ].join(', '));
             const description = video.querySelector('#description-text, #description, yt-formatted-string#description-text');
             const visibleText = [title, description]
                 .filter(Boolean)
